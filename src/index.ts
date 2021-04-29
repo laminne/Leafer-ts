@@ -37,7 +37,7 @@ async function get(userid:any) {
     }))
 }
 
-async function screenshot(filename:any) {
+async function screenshot(filename:any, username:string) {
     const browser = await puppeteer.launch({
         args: [
             '--no-sandbox',
@@ -47,7 +47,7 @@ async function screenshot(filename:any) {
     })
     const page = await browser.newPage()
     await page.setViewport({width: 1920,height: 1080})
-    await page.goto("https://github.com/laminne")
+    await page.goto("https://github.com/" + username)
     const rect = await page.evaluate(() => {
         const learnMore = document.querySelector("#js-pjax-container > div.mt-4.position-sticky.top-0.d-none.d-md-block.color-bg-primary.width-full.border-bottom.color-border-secondary > div > div > div.flex-shrink-0.col-12.col-md-9.mb-4.mb-md-0 > div")
         learnMore?.parentElement?.removeChild(learnMore)
@@ -83,7 +83,7 @@ client.on('message', async (message:any) =>{
         message.channel.send(`<@${message.author.id}>\n取得を開始します,これには時間がかかります`)
         await get(message.author.id)
         grass = JSON.parse(grass)
-        await screenshot(grass.id)
+        await screenshot(grass.id, grass.github)
             .catch(e => {
                 message.channel.send(`<@${message.author.id}>\nエラーが発生しました:\n` + "```"+ e + "```")
                 throw e
@@ -106,14 +106,17 @@ client.on('message', async (message:any) =>{
     if (message.content.startsWith('l!register')) {
         gh_user_name = message.content.substr(11, message.content.length)
         discord_id = message.author.id
+        let status:string = "成功"
         register()
             .catch(e => {
                 message.channel.send(`<@${message.author.id}>\n` + "```"+ e + "```")
+                status = "失敗"
                 throw e
             })
             .finally(async ()=> {
                 await prisma.$disconnect()
                 console.log(`${reg}`)
+                await message.channel.send(`<@${message.author.id}>\n` + "登録に" + status + "しました")
             })
     }
 
