@@ -1,14 +1,15 @@
-import { Client } from "discord.js"
+import { Client, MessageAttachment } from "discord.js"
 import {PrismaClient} from '@prisma/client'
 import puppeteer from "puppeteer"
 
+
 const prisma = new PrismaClient()
+const client = new Client()
+const env:any = process.env
 let reg:any
 let allusers:any
 let discord_id:any
 let gh_user_name:any
-const client = new Client()
-const env:any = process.env
 let discord_token:any = env.token
 let grass:any
 
@@ -34,10 +35,9 @@ async function get(userid:any) {
             discord: userid,
         },
     }))
-    console.log(userid)
 }
 
-async function screenshot() {
+async function screenshot(filename:any) {
     const browser = await puppeteer.launch({
         args: [
             '--no-sandbox',
@@ -64,7 +64,8 @@ async function screenshot() {
     })
     const element = await page.$(".graph-before-activity-overview");
     if (element!) {
-        await element.screenshot({clip: rect, path: 'screenShotPage.png'});
+        console.log("ファイル名" + filename)
+        await element.screenshot({clip: rect, path: `./images/${filename}.png`});
     }
     await browser.close()
     console.log("done")
@@ -80,7 +81,9 @@ client.on('message', async (message:any) =>{
     }
     if (message.content === "l!get") {
         message.channel.send(`<@${message.author.id}>\n取得を開始します,これには時間がかかります`)
-        await screenshot()
+        await get(message.author.id)
+        grass = JSON.parse(grass)
+        await screenshot(grass.id)
             .catch(e => {
                 message.channel.send(`<@${message.author.id}>\nエラーが発生しました:\n` + "```"+ e + "```")
                 throw e
@@ -122,11 +125,10 @@ client.on('message', async (message:any) =>{
             })
             .finally(async ()=> {
                 await prisma.$disconnect()
-                grass = JSON.parse(grass)
-                console.log(`${grass.id}`)
-                await message.channel.send(`<@${message.author.id}>\n` + "```" + grass.id + "```")
             })
-        console.log(typeof grass)
+        grass = JSON.parse(grass)
+        let file = "./images/"+grass.id + ".png"
+        message.channel.send(new MessageAttachment(file))
     }
 
 })
