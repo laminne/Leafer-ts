@@ -14,9 +14,9 @@ let gh_user_name;
 const client = new discord_js_1.Client();
 const env = process.env;
 let discord_token = env.token;
+let grass;
 async function getall() {
     allusers = JSON.stringify(await prisma.user.findMany());
-    console.log(typeof allusers);
 }
 async function register() {
     reg = await prisma.user.create({
@@ -28,6 +28,14 @@ async function register() {
             }
         }
     });
+}
+async function get(userid) {
+    grass = JSON.stringify(await prisma.user.findUnique({
+        where: {
+            discord: userid,
+        },
+    }));
+    console.log(userid);
 }
 async function screenshot() {
     const browser = await puppeteer_1.default.launch({
@@ -69,10 +77,10 @@ client.on('message', async (message) => {
         return;
     }
     if (message.content === "l!get") {
-        message.channel.send(`<@${message.author.id}>取得を開始します,これには時間がかかります`);
+        message.channel.send(`<@${message.author.id}>\n取得を開始します,これには時間がかかります`);
         await screenshot()
             .catch(e => {
-            message.channel.send(`<@${message.author.id}>エラーが発生しました:\n` + "```" + e + "```");
+            message.channel.send(`<@${message.author.id}>\nエラーが発生しました:\n` + "```" + e + "```");
             throw e;
         });
         message.channel.send(`<@${message.author.id}>\n取得しました`);
@@ -84,8 +92,8 @@ client.on('message', async (message) => {
         })
             .finally(async () => {
             await prisma.$disconnect();
-            console.log(`aaa${allusers}`);
-            await message.channel.send(`\`\`\`${allusers}\`\`\``);
+            console.log(`${allusers}`);
+            await message.channel.send(`<@${message.author.id}>\n` + "```" + allusers + "```");
         });
     }
     if (message.content.startsWith('l!register')) {
@@ -93,13 +101,27 @@ client.on('message', async (message) => {
         discord_id = message.author.id;
         register()
             .catch(e => {
-            message.channel.send("```" + e + "```");
+            message.channel.send(`<@${message.author.id}>\n` + "```" + e + "```");
             throw e;
         })
             .finally(async () => {
             await prisma.$disconnect();
             console.log(`${reg}`);
         });
+    }
+    if (message.content === "草" || message.content === "kusa") {
+        await get(message.author.id)
+            .catch(e => {
+            message.channel.send(`<@${message.author.id}>\n` + "```" + e + "```");
+            throw e;
+        })
+            .finally(async () => {
+            await prisma.$disconnect();
+            grass = JSON.parse(grass);
+            console.log(`${grass.id}`);
+            await message.channel.send(`<@${message.author.id}>\n` + "```" + grass.id + "```");
+        });
+        console.log(typeof grass);
     }
 });
 client.login(discord_token);

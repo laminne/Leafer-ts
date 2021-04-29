@@ -10,11 +10,10 @@ let gh_user_name:any
 const client = new Client()
 const env:any = process.env
 let discord_token:any = env.token
-
+let grass:any
 
 async function getall() {
     allusers = JSON.stringify(await prisma.user.findMany())
-    console.log(typeof allusers)
 }
 
 async function register() {
@@ -27,6 +26,15 @@ async function register() {
             }
         }
     })
+}
+
+async function get(userid:any) {
+    grass = JSON.stringify(await prisma.user.findUnique({
+        where: {
+            discord: userid,
+        },
+    }))
+    console.log(userid)
 }
 
 async function screenshot() {
@@ -61,8 +69,6 @@ async function screenshot() {
     await browser.close()
     console.log("done")
 }
-
-
 
 client.on('ready', () => {
     console.log("Started")
@@ -106,6 +112,21 @@ client.on('message', async (message:any) =>{
                 await prisma.$disconnect()
                 console.log(`${reg}`)
             })
+    }
+
+    if (message.content === "草" || message.content === "kusa") {
+        await get(message.author.id)
+            .catch(e => {
+                message.channel.send(`<@${message.author.id}>\n` + "```"+ e + "```")
+                throw e
+            })
+            .finally(async ()=> {
+                await prisma.$disconnect()
+                grass = JSON.parse(grass)
+                console.log(`${grass.id}`)
+                await message.channel.send(`<@${message.author.id}>\n` + "```" + grass.id + "```")
+            })
+        console.log(typeof grass)
     }
 
 })
