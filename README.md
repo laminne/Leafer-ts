@@ -5,7 +5,7 @@
 ..茶番はここまで  
 ## about
 
-[Leafer](https://github.com/kosen20s/leafer) のlaminneによるTS再実装版です.  
+[Leafer](https://github.com/kosen20s/leafer) のlaminne(作者です)によるTS再実装版です.  
 ※**SQLite3を使用しない**[別のTS実装](https://github.com/tuxsnct/leafer-node)も存在します(実装してくれた方に感謝)
 
 ## 環境の情報  
