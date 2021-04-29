@@ -13,6 +13,7 @@ let gh_user_name:any
 let discord_token:any = env.token
 let grass:any
 
+
 async function getall() {
     allusers = JSON.stringify(await prisma.user.findMany())
 }
@@ -35,6 +36,13 @@ async function get(userid:any) {
             discord: userid,
         },
     }))
+}
+
+async function update(id:any, ghid:string){
+    await prisma.user.update({
+        where: {discord: id},
+        data: {github: ghid}
+    })
 }
 
 async function screenshot(filename:any, username:string) {
@@ -112,6 +120,23 @@ client.on('message', async (message:any) =>{
         discord_id = message.author.id
         let status:string = "成功"
         register()
+            .catch(e => {
+                message.channel.send(`<@${message.author.id}>\n` + "```"+ e + "```")
+                status = "失敗"
+                throw e
+            })
+            .finally(async ()=> {
+                await prisma.$disconnect()
+                console.log(`${reg}`)
+                await message.channel.send(`<@${message.author.id}>\n` + "登録に" + status + "しました")
+            })
+    }
+
+    if (message.content.startsWith('l!update')) {
+        gh_user_name = message.content.substr(8, message.content.length)
+        discord_id = message.author.id
+        let status:string = "成功"
+        update(discord_id,gh_user_name)
             .catch(e => {
                 message.channel.send(`<@${message.author.id}>\n` + "```"+ e + "```")
                 status = "失敗"
