@@ -1,0 +1,4 @@
+.idea/
+prisma/migrations
+prisma/dev.db
+node_modules
