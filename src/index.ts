@@ -91,6 +91,10 @@ client.on('message', async (message:any) =>{
         message.channel.send(`<@${message.author.id}>\n取得しました`)
     }
 
+    if (message.content === "l!help") {
+        await message.channel.send("```Leafer-node \nLeaferのTypeScript実装\nl!register <GitHubのユーザー名> :登録します\n l!get :画像を取得します\n機能はこれだけです\n'草'、'kusa'に反応します```")
+    }
+
     if (message.content === "l!all") {
         getall()
             .catch(e => {
