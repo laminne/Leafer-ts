@@ -2,7 +2,6 @@ import { Client, MessageAttachment } from "discord.js"
 import {PrismaClient} from '@prisma/client'
 import puppeteer from "puppeteer"
 
-
 const prisma = new PrismaClient()
 const client = new Client()
 const env:any = process.env
@@ -12,7 +11,6 @@ let discord_id:any
 let gh_user_name:any
 let discord_token:any = env.token
 let grass:any
-
 
 async function getall() {
     allusers = JSON.stringify(await prisma.user.findMany())
@@ -38,12 +36,6 @@ async function get(userid:any) {
     }))
 }
 
-async function update(id:any, ghid:string){
-    await prisma.user.update({
-        where: {discord: id},
-        data: {github: ghid}
-    })
-}
 
 async function screenshot(filename:any, username:string) {
     const browser = await puppeteer.launch({
@@ -132,22 +124,6 @@ client.on('message', async (message:any) =>{
             })
     }
 
-    if (message.content.startsWith('l!update')) {
-        gh_user_name = message.content.substr(8, message.content.length)
-        discord_id = message.author.id
-        let status:string = "成功"
-        update(discord_id,gh_user_name)
-            .catch(e => {
-                message.channel.send(`<@${message.author.id}>\n` + "```"+ e + "```")
-                status = "失敗"
-                throw e
-            })
-            .finally(async ()=> {
-                await prisma.$disconnect()
-                console.log(`${reg}`)
-                await message.channel.send(`<@${message.author.id}>\n` + "登録に" + status + "しました")
-            })
-    }
 
     if (message.content === "草" || message.content === "kusa") {
         await get(message.author.id)
