@@ -6,9 +6,9 @@ const prisma = new PrismaClient()
 const client = new Client()
 const env:any = process.env
 let reg:any
-let allusers:any
-let discord_id:any
-let gh_user_name:any
+let allusers:string
+let discord_id:string
+let gh_user_name:string
 let discord_token:any = env.token
 let grass:any
 
@@ -27,6 +27,14 @@ async function register() {
         }
     })
 }
+
+async function update(id:string, ghid:string){
+    await prisma.user.update({
+        where: {discord: id},
+        data: {github: ghid}
+    })
+}
+
 
 async function get(userid:any) {
     grass = JSON.stringify(await prisma.user.findUnique({
@@ -92,7 +100,7 @@ client.on('message', async (message:any) =>{
     }
 
     if (message.content === "l!help") {
-        await message.channel.send("```Leafer-node \nLeaferのTypeScript実装\nl!register <GitHubのユーザー名> :登録します\n l!get :画像を取得します\n機能はこれだけです\n'草'、'kusa'に反応します```")
+        await message.channel.send("```Leafer-node \nLeaferのTypeScript実装\n\nl!register <GitHubのユーザー名> :登録します\nl!get :画像を取得します\n機能はこれだけです\n'草'、'kusa'に反応します```")
     }
 
     if (message.content === "l!all") {
@@ -107,6 +115,25 @@ client.on('message', async (message:any) =>{
             })
     }
 
+    if (message.content.startsWith('l!update')) {
+        gh_user_name = message.content.substr(9, message.content.length)
+        discord_id = message.author.id
+        console.log(discord_id, gh_user_name)
+        let status:string = "成功"
+        update(discord_id,gh_user_name)
+            .catch(e => {
+                message.channel.send(`<@${message.author.id}>\n` + "```"+ e + "```")
+                status = "失敗"
+                throw e
+            })
+            .finally(async ()=> {
+                await prisma.$disconnect()
+                // console.log(`${reg}`) // Todo: 謎のreg
+                await message.channel.send(`<@${message.author.id}>\n` + "再登録に" + status + "しま[>
+            })
+    }
+
+    
     if (message.content.startsWith('l!register')) {
         gh_user_name = message.content.substr(11, message.content.length)
         discord_id = message.author.id
