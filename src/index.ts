@@ -128,8 +128,8 @@ client.on('message', async (message:any) =>{
             })
             .finally(async ()=> {
                 await prisma.$disconnect()
-                // console.log(`${reg}`) // Todo: 謎のreg
-                await message.channel.send(`<@${message.author.id}>\n` + "再登録に" + status + "しま[>
+                
+                await message.channel.send(`<@${message.author.id}>\n` + "再登録に" + status + "しました")
             })
     }
 
