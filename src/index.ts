@@ -107,7 +107,7 @@ client.on('message', async (message:any) =>{
             return
         } else {
             let status:string = "成功"
-            register()
+            register(discord_id,gh_user_name)
                 .catch(e => {
                     message.channel.send(`<@${message.author.id}>\n` + "```"+ e + "```")
                     status = "失敗"

@@ -1,4 +1,5 @@
 FROM node:10.19.0
+VOLUME ./images
 
 RUN apt-get update \
  && apt-get install -y \
@@ -42,7 +43,7 @@ RUN apt-get update \
       wget \
       sqlite3
 
-RUN npm i puppeteer && npm i prisma
+RUN npm i node-cron && npm i puppeteer && npm i prisma
 
 COPY ./ .
 

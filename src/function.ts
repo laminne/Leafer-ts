@@ -5,8 +5,6 @@ import cron from "node-cron"
 export const prisma = new PrismaClient()
 export let reg:any
 export let allusers:any
-export let discord_id:string
-export let gh_user_name:string
 export let grass:any
 
 
@@ -15,7 +13,7 @@ export async function getall() {
     return allusers
 }
 
-export async function register() {
+export async function register(discord_id:string, gh_user_name:string) {
     reg = await prisma.user.create({
         data: {
             discord: discord_id,
@@ -50,7 +48,7 @@ export async function screenshot(filename:any, username:string) {
             '--disable-setuid-sandbox',
             "--disable-web-security"
         ],
-        executablePath: '/home/laminne/chrome-linux/chrome'
+        // executablePath: '/home/laminne/chrome-linux/chrome'
     })
     const page = await browser.newPage()
     await page.setViewport({width: 1920,height: 1080})
