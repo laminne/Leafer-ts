@@ -43,8 +43,8 @@ RUN apt-get update \
       wget \
       sqlite3
 
-RUN npm i node-cron && npm i puppeteer && npm i prisma
-
 COPY ./ .
+
+RUN npm i node-cron && npm i puppeteer && npm i prisma && npm install
 
 ENTRYPOINT npm start

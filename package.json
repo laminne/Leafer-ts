@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc -p . && node ./build/index.js",
+    "start": "npx tsc -p . && node ./build/index.js",
     "debug": "ts-node ./src/index.ts",
     "compile": "tsc -p .",
     "compile:test": "tsc -p . --noEmit"
