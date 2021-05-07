@@ -1,4 +1,5 @@
 # ***†Leafer-ts†***
+![image](https://user-images.githubusercontent.com/40442980/117464227-6aad7680-af8b-11eb-889b-2017a152a469.png)
 
 例の草ボット(のようなもの)を作ろうとしてできたクソ実装ボット,LeaferがTypeScriptで再実装して(~~碌な言語で書き直されて~~)帰ってきた！  
 
