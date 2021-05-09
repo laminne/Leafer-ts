@@ -32,7 +32,7 @@ client.on('message', async (message:any) =>{
     }
 
     if (message.content === "l!help") {
-        await message.channel.send("```Leafer-node \nLeaferのTypeScript実装\n\nl!register <GitHubのユーザー名> :登録します\nl!get :画像を取得します\n機能はこれだけです\n'草'、'kusa'に反応します```")
+        await message.channel.send("```Leafer-ts \nLeaferのTypeScript実装\n\nl!register <GitHubのユーザー名> :登録します\nl!get :画像を取得します\n機能はこれだけです\n'草'、'kusa'に反応します```")
     }
 
     if (message.content === "l!img"){
